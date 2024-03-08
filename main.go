@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ivnhk/blockchain-go/network"
 )
 
@@ -11,5 +10,5 @@ func main() {
 		Transports: []network.Transport{trLocal},
 	}
 	s := network.NewServer(opts)
-	fmt.Println(s)
+	s.Start()
 }
