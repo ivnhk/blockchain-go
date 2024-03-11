@@ -1,8 +1,13 @@
 package core
 
-import "io"
+import (
+	"github.com/ivnhk/blockchain-go/types"
+	"io"
+)
 
 type Transaction struct {
+	Data []byte
+	From types.Address
 }
 
 func (tx *Transaction) EncodeBinary(w io.Writer) error {
