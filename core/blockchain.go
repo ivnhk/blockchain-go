@@ -7,16 +7,20 @@ type Blockchain struct {
 }
 
 func (bc *Blockchain) AddBlock(b *Block) error {
-	// validate that a block is valid
+	if err := bc.validator.ValidateBlock(b); err != nil {
+		return err
+	}
 
-	//bc.store.append(b)
-	//bc.Headers = append(bc.Headers, b.Header)
-
+	bc.addBlockWithoutValidation(b)
 	return nil
 }
 
 func (bc *Blockchain) Height() uint32 {
 	return uint32(len(bc.headers) - 1)
+}
+
+func (bc *Blockchain) HasBlock(height uint32) bool {
+	return height <= bc.Height()
 }
 
 func (bc *Blockchain) addBlockWithoutValidation(b *Block) error {
