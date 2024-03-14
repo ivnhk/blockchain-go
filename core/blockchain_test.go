@@ -6,6 +6,7 @@ import (
 )
 
 func TestBlockchain(t *testing.T) {
-	bc := NewBlockchain()
+	bc, err := NewBlockchain(randomBlock(0))
+	assert.Nil(t, err)
 	assert.NotNil(t, bc.validator)
 }
