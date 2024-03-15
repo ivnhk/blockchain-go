@@ -35,3 +35,9 @@ func TestAddBlock(t *testing.T) {
 	assert.Equal(t, lenBlocks+1, len(bc.headers))
 	assert.NotNil(t, bc.AddBlock(randomBlock(89)))
 }
+
+func TestAddBlockTooHigh(t *testing.T) {
+	bc := newBlockchainWithGenesis(t)
+
+	assert.NotNil(t, bc.AddBlock(randomBlockWithSignature(t, 3)))
+}
