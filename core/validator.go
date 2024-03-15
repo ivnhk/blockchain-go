@@ -1,5 +1,7 @@
 package core
 
+import "fmt"
+
 type Validator interface {
 	ValidateBlock(*Block) error
 }
@@ -8,7 +10,10 @@ type BlockValidator struct {
 	bc *Blockchain
 }
 
-func (bv *BlockValidator) ValidateBlock(b *Block) error {
+func (v *BlockValidator) ValidateBlock(b *Block) error {
+	if v.bc.HasBlock(b.Height) {
+		return fmt.Errorf("chain already contains block (%d)", b.Height)
+	}
 	return nil
 }
 

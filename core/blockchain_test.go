@@ -33,4 +33,5 @@ func TestAddBlock(t *testing.T) {
 	}
 	assert.Equal(t, uint32(lenBlocks), bc.Height())
 	assert.Equal(t, lenBlocks+1, len(bc.headers))
+	assert.NotNil(t, bc.AddBlock(randomBlock(89)))
 }
