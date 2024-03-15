@@ -14,6 +14,9 @@ func (v *BlockValidator) ValidateBlock(b *Block) error {
 	if v.bc.HasBlock(b.Height) {
 		return fmt.Errorf("chain already contains block (%d)", b.Height)
 	}
+	if err := b.Verify(); err != nil {
+		return err
+	}
 	return nil
 }
 

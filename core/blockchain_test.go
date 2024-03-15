@@ -28,7 +28,7 @@ func TestAddBlock(t *testing.T) {
 
 	lenBlocks := 1000
 	for i := 1; i <= lenBlocks; i++ {
-		block := randomBlock(uint32(i))
+		block := randomBlockWithSignature(t, uint32(i))
 		assert.Nil(t, bc.AddBlock(block))
 	}
 	assert.Equal(t, uint32(lenBlocks), bc.Height())
