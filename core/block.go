@@ -17,6 +17,14 @@ type Header struct {
 	Height        uint32
 }
 
+func (h *Header) Bytes() []byte {
+	buf := bytes.Buffer{}
+	enc := gob.NewEncoder(&buf)
+	enc.Encode(h)
+
+	return buf.Bytes()
+}
+
 type Block struct {
 	*Header
 	Transactions []Transaction
@@ -34,15 +42,15 @@ func (b *Block) Decode(r io.Reader, dec Decoder[*Block]) error {
 	return dec.Decode(r, b)
 }
 
-func (b *Block) Hash(hr Hasher[*Block]) types.Hash {
+func (b *Block) Hash(hr Hasher[*Header]) types.Hash {
 	if b.hash.IsZero() {
-		b.hash = hr.Hash(b)
+		b.hash = hr.Hash(b.Header)
 	}
 	return b.hash
 }
 
 func (b *Block) Sign(privKey crypto.PrivateKey) error {
-	sig, err := privKey.Sign(b.HeaderData())
+	sig, err := privKey.Sign(b.Header.Bytes())
 	if err != nil {
 		return err
 	}
@@ -55,18 +63,10 @@ func (b *Block) Verify() error {
 	if b.Signature == nil {
 		return fmt.Errorf("block has no signature")
 	}
-	if !b.Signature.Verify(b.Validator, b.HeaderData()) {
+	if !b.Signature.Verify(b.Validator, b.Header.Bytes()) {
 		return fmt.Errorf("invalid block signature")
 	}
 	return nil
-}
-
-func (b *Block) HeaderData() []byte {
-	buf := bytes.Buffer{}
-	enc := gob.NewEncoder(&buf)
-	enc.Encode(b.Header)
-
-	return buf.Bytes()
 }
 
 func NewBlock(h *Header, txx []Transaction) *Block {
