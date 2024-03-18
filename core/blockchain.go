@@ -1,6 +1,9 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"log/slog"
+)
 
 type Blockchain struct {
 	store     Storage
@@ -33,6 +36,11 @@ func (bc *Blockchain) GetHeader(height uint32) (*Header, error) {
 }
 
 func (bc *Blockchain) addBlockWithoutValidation(b *Block) error {
+	slog.Info(
+		"Add block without validation",
+		"height", b.Height,
+		"hash", b.Hash(BlockHasher{}),
+	)
 	bc.headers = append(bc.headers, b.Header)
 
 	return bc.store.Put(b)
