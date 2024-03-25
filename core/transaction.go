@@ -3,12 +3,16 @@ package core
 import (
 	"fmt"
 	"github.com/ivnhk/blockchain-go/crypto"
+	"github.com/ivnhk/blockchain-go/types"
 )
 
 type Transaction struct {
 	Data      []byte
 	From      crypto.PublicKey
 	Signature *crypto.Signature
+
+	// cached version of the tx data hash
+	hash types.Hash
 }
 
 func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
@@ -30,4 +34,17 @@ func (tx *Transaction) Verify() error {
 		return fmt.Errorf("invalid transaction signature")
 	}
 	return nil
+}
+
+func (tx *Transaction) Hash(hasher Hasher[*Transaction]) types.Hash {
+	if tx.hash.IsZero() {
+		tx.hash = hasher.Hash(tx)
+	}
+	return tx.hash
+}
+
+func NewTransaction(data []byte) *Transaction {
+	return &Transaction{
+		Data: data,
+	}
 }
